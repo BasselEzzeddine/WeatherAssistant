@@ -18,7 +18,7 @@ class WeatherWorkerTests: XCTestCase {
     // MARK: - XCTestCase
     override func setUp() {
         super.setUp()
-        setupSUT()
+        setupSut()
     }
     
     override func tearDown() {
@@ -27,8 +27,8 @@ class WeatherWorkerTests: XCTestCase {
         super.tearDown()
     }
     
-    // MARK: - Setup
-    func setupSUT() {
+    // MARK: - Methods
+    func setupSut() {
         sut = WeatherWorker()
     }
     

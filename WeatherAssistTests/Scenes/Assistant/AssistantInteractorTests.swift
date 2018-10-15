@@ -14,8 +14,24 @@ class AssistantInteractorTests: XCTestCase {
     // MARK: - Properties
     var sut: AssistantInteractor!
     
-    // MARK: - Mocks
-    class AssistantPresenterMock: AssistantInteractorOut {
+    // MARK: - XCTestCase
+    override func setUp() {
+        super.setUp()
+        setupSut()
+    }
+    
+    override func tearDown() {
+        sut = nil
+        super.tearDown()
+    }
+    
+    // MARK: - Methods
+    func setupSut() {
+        sut = AssistantInteractor()
+    }
+    
+    // MARK: - Spies
+    class AssistantPresenterSpy: AssistantInteractorOut {
         var presentWelcomeMessageCalled = false
         
         var presentWeatherMessageCalled = false
@@ -37,7 +53,7 @@ class AssistantInteractorTests: XCTestCase {
         }
     }
     
-    class VoiceListenerMock: VoiceListener {
+    class VoiceListenerSpy: VoiceListener {
         var setupVoiceListeningCalled = false
         var isSuccessfulToBeReturned = false
         
@@ -55,7 +71,7 @@ class AssistantInteractorTests: XCTestCase {
         }
     }
     
-    class WeatherWorkerMock: WeatherWorker {
+    class WeatherWorkerSpy: WeatherWorker {
         var fetchCurrentWeatherCalled = false
         var rawWeatherToBeReturned: RawWeather?
         var successToBeReturned = false
@@ -66,144 +82,128 @@ class AssistantInteractorTests: XCTestCase {
         }
     }
     
-    // MARK: - XCTestCase
-    override func setUp() {
-        super.setUp()
-        setupSUT()
-    }
-    
-    override func tearDown() {
-        sut = nil
-        super.tearDown()
-    }
-    
-    // MARK: - Setup
-    func setupSUT() {
-        sut = AssistantInteractor()
-    }
-    
     // MARK: - Tests
     func testCallingExecuteTasksWaitingViewToLoad_CallsPresentWelcomeMessageInPresenter() {
         // Given
-        let presenterMock = AssistantPresenterMock()
-        sut.presenter = presenterMock
+        let presenterSpy = AssistantPresenterSpy()
+        sut.presenter = presenterSpy
         
         // When
         sut.executeTasksWaitingViewToLoad()
         
         // Then
-        XCTAssertTrue(presenterMock.presentWelcomeMessageCalled)
+        XCTAssertTrue(presenterSpy.presentWelcomeMessageCalled)
     }
     
     func testCallingExecuteTasksWaitingViewToLoad_CallsSetupVoiceListeningInVoiceListener() {
         // Given
-        let voiceListenerMock = VoiceListenerMock()
-        sut.voiceListener = voiceListenerMock
+        let voiceListenerSpy = VoiceListenerSpy()
+        sut.voiceListener = voiceListenerSpy
         
         // When
         sut.executeTasksWaitingViewToLoad()
         
         // Then
-        XCTAssertTrue(voiceListenerMock.setupVoiceListeningCalled)
+        XCTAssertTrue(voiceListenerSpy.setupVoiceListeningCalled)
     }
     
     func testCallingExecuteTasksWaitingViewToLoad_CallsStartListeningInVoiceListener_WhenSetupVoiceListeningIsSuccessful() {
         // Given
-        let voiceListenerMock = VoiceListenerMock()
-        sut.voiceListener = voiceListenerMock
+        let voiceListenerSpy = VoiceListenerSpy()
+        sut.voiceListener = voiceListenerSpy
         
         // When
-        voiceListenerMock.isSuccessfulToBeReturned = true
+        voiceListenerSpy.isSuccessfulToBeReturned = true
         sut.executeTasksWaitingViewToLoad()
         
         // Then
-        XCTAssertTrue(voiceListenerMock.startListeningCalled)
+        XCTAssertTrue(voiceListenerSpy.startListeningCalled)
     }
     
     func testCallingStartListeningToUserAndRecognizingWords_CallsFetchCurrentWeatherInWorker_WhenRecognizedWordIsWeather() {
         // Given
-        let voiceListenerMock = VoiceListenerMock()
-        sut.voiceListener = voiceListenerMock
+        let voiceListenerSpy = VoiceListenerSpy()
+        sut.voiceListener = voiceListenerSpy
         
-        let weatherWorkerMock = WeatherWorkerMock()
-        sut.weatherWorker = weatherWorkerMock
+        let weatherWorkerSpy = WeatherWorkerSpy()
+        sut.weatherWorker = weatherWorkerSpy
         
         // When
-        voiceListenerMock.recognizedWordToBeReturned = "Weather"
+        voiceListenerSpy.recognizedWordToBeReturned = "Weather"
         sut.startListeningAndRecognizingWords()
         
         // Then
-        XCTAssertTrue(weatherWorkerMock.fetchCurrentWeatherCalled)
+        XCTAssertTrue(weatherWorkerSpy.fetchCurrentWeatherCalled)
     }
     
     func testCallingStartListeningToUserAndRecognizingWords_CallsPresentWeatherMessageInPresenterWithCorrectData_WhenResponseFromWorkerIsSuccessAndIsNotNil() {
         // Given
-        let voiceListenerMock = VoiceListenerMock()
-        sut.voiceListener = voiceListenerMock
+        let voiceListenerSpy = VoiceListenerSpy()
+        sut.voiceListener = voiceListenerSpy
         
-        let weatherWorkerMock = WeatherWorkerMock()
-        sut.weatherWorker = weatherWorkerMock
+        let weatherWorkerSpy = WeatherWorkerSpy()
+        sut.weatherWorker = weatherWorkerSpy
         
-        let presenterMock = AssistantPresenterMock()
-        sut.presenter = presenterMock
+        let presenterSpy = AssistantPresenterSpy()
+        sut.presenter = presenterSpy
         
         // When
         let main = RawWeather.Main(temp: 25, pressure: 1000, humidity: 50)
-        weatherWorkerMock.rawWeatherToBeReturned = RawWeather(main: main)
-        weatherWorkerMock.successToBeReturned = true
+        weatherWorkerSpy.rawWeatherToBeReturned = RawWeather(main: main)
+        weatherWorkerSpy.successToBeReturned = true
         
-        voiceListenerMock.recognizedWordToBeReturned = "Weather"
+        voiceListenerSpy.recognizedWordToBeReturned = "Weather"
         sut.startListeningAndRecognizingWords()
         
         // Then
-        XCTAssertTrue(presenterMock.presentWeatherMessageCalled)
-        XCTAssertEqual(presenterMock.presentWeatherMessageResponse?.temperature, 25)
-        XCTAssertEqual(presenterMock.presentWeatherMessageResponse?.pressure, 1000)
-        XCTAssertEqual(presenterMock.presentWeatherMessageResponse?.humidity, 50)
+        XCTAssertTrue(presenterSpy.presentWeatherMessageCalled)
+        XCTAssertEqual(presenterSpy.presentWeatherMessageResponse?.temperature, 25)
+        XCTAssertEqual(presenterSpy.presentWeatherMessageResponse?.pressure, 1000)
+        XCTAssertEqual(presenterSpy.presentWeatherMessageResponse?.humidity, 50)
     }
     
     func testCallingStartListeningToUserAndRecognizingWords_CallsPresentErrorMessageInPresenter_WhenResponseFromWorkerIsNotSuccess() {
         // Given
-        let voiceListenerMock = VoiceListenerMock()
-        sut.voiceListener = voiceListenerMock
+        let voiceListenerSpy = VoiceListenerSpy()
+        sut.voiceListener = voiceListenerSpy
         
-        let weatherWorkerMock = WeatherWorkerMock()
-        sut.weatherWorker = weatherWorkerMock
+        let weatherWorkerSpy = WeatherWorkerSpy()
+        sut.weatherWorker = weatherWorkerSpy
         
-        let presenterMock = AssistantPresenterMock()
-        sut.presenter = presenterMock
+        let presenterSpy = AssistantPresenterSpy()
+        sut.presenter = presenterSpy
         
         // When
         let main = RawWeather.Main(temp: 25, pressure: 1000, humidity: 50)
-        weatherWorkerMock.rawWeatherToBeReturned = RawWeather(main: main)
-        weatherWorkerMock.successToBeReturned = false
+        weatherWorkerSpy.rawWeatherToBeReturned = RawWeather(main: main)
+        weatherWorkerSpy.successToBeReturned = false
         
-        voiceListenerMock.recognizedWordToBeReturned = "Weather"
+        voiceListenerSpy.recognizedWordToBeReturned = "Weather"
         sut.startListeningAndRecognizingWords()
         
         // Then
-        XCTAssertTrue(presenterMock.presentErrorMessageCalled)
+        XCTAssertTrue(presenterSpy.presentErrorMessageCalled)
     }
     
     func testCallingStartListeningToUserAndRecognizingWords_CallsPresentErrorMessageInPresenter_WhenResponseFromWorkerIsSuccessAndIsNil() {
         // Given
-        let voiceListenerMock = VoiceListenerMock()
-        sut.voiceListener = voiceListenerMock
+        let voiceListenerSpy = VoiceListenerSpy()
+        sut.voiceListener = voiceListenerSpy
         
-        let weatherWorkerMock = WeatherWorkerMock()
-        sut.weatherWorker = weatherWorkerMock
+        let weatherWorkerSpy = WeatherWorkerSpy()
+        sut.weatherWorker = weatherWorkerSpy
         
-        let presenterMock = AssistantPresenterMock()
-        sut.presenter = presenterMock
+        let presenterSpy = AssistantPresenterSpy()
+        sut.presenter = presenterSpy
         
         // When
-        weatherWorkerMock.rawWeatherToBeReturned = nil
-        weatherWorkerMock.successToBeReturned = true
+        weatherWorkerSpy.rawWeatherToBeReturned = nil
+        weatherWorkerSpy.successToBeReturned = true
         
-        voiceListenerMock.recognizedWordToBeReturned = "Weather"
+        voiceListenerSpy.recognizedWordToBeReturned = "Weather"
         sut.startListeningAndRecognizingWords()
         
         // Then
-        XCTAssertTrue(presenterMock.presentErrorMessageCalled)
+        XCTAssertTrue(presenterSpy.presentErrorMessageCalled)
     }
 }

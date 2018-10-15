@@ -15,8 +15,24 @@ class SpeakerTests: XCTestCase {
     // MARK: - Properties
     var sut: Speaker!
     
-    // MARK: - Mocks
-    class SynthesizerMock: AVSpeechSynthesizer {
+    // MARK: - XCTestCase
+    override func setUp() {
+        super.setUp()
+        setupSut()
+    }
+    
+    override func tearDown() {
+        sut = nil
+        super.tearDown()
+    }
+    
+    // MARK: - Methods
+    func setupSut() {
+        sut = Speaker()
+    }
+    
+    // MARK: - Spies
+    class SynthesizerSpy: AVSpeechSynthesizer {
         var speakCalled = false
         var speechStringPassed = ""
         
@@ -26,33 +42,17 @@ class SpeakerTests: XCTestCase {
         }
     }
     
-    // MARK: - XCTestCase
-    override func setUp() {
-        super.setUp()
-        setupSUT()
-    }
-    
-    override func tearDown() {
-        sut = nil
-        super.tearDown()
-    }
-    
-    // MARK: - Setup
-    func setupSUT() {
-        sut = Speaker()
-    }
-    
     // MARK: - Tests
     func testCallingSpeakInSpeaker_CallsSpeakInSynthesizerWithCorrectData() {
         // Given
-        let synthesizerMock = SynthesizerMock()
-        sut.synthesizer = synthesizerMock
+        let synthesizerSpy = SynthesizerSpy()
+        sut.synthesizer = synthesizerSpy
         
         // When
         sut.speak(message: "Hello")
         
         // Then
-        XCTAssertTrue(synthesizerMock.speakCalled)
-        XCTAssertEqual(synthesizerMock.speechStringPassed, "Hello")
+        XCTAssertTrue(synthesizerSpy.speakCalled)
+        XCTAssertEqual(synthesizerSpy.speechStringPassed, "Hello")
     }
 }

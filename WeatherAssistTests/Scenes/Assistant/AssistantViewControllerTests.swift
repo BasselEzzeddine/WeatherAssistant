@@ -12,11 +12,28 @@ import XCTest
 class AssistantViewControllerTests: XCTestCase {
     
     // MARK: - Properties
-    var window: UIWindow!
     var sut: AssistantViewController!
     
-    // MARK: - Mocks
-    class AssistantInteractorMock: AssistantViewControllerOut {
+    // MARK: - XCTestCase
+    override func setUp() {
+        super.setUp()
+        setupSut()
+    }
+    
+    override func tearDown() {
+        sut = nil
+        super.tearDown()
+    }
+    
+    // MARK: - Methods
+    func setupSut() {
+        let storyboard = UIStoryboard(name: "Main", bundle: Bundle.main)
+        sut = storyboard.instantiateViewController(withIdentifier: "AssistantViewController") as? AssistantViewController
+        UIApplication.shared.keyWindow?.rootViewController = sut
+    }
+    
+    // MARK: - Spies
+    class AssistantInteractorSpy: AssistantViewControllerOut {
         var executeTasksWaitingViewToLoadCalled = false
         
         func executeTasksWaitingViewToLoad() {
@@ -24,42 +41,16 @@ class AssistantViewControllerTests: XCTestCase {
         }
     }
     
-    // MARK: - XCTestCase
-    override func setUp() {
-        super.setUp()
-        window = UIWindow()
-        setupSUT()
-        loadView()
-    }
-    
-    override func tearDown() {
-        sut = nil
-        window = nil
-        super.tearDown()
-    }
-    
-    // MARK: - Setup
-    func setupSUT() {
-        let bundle = Bundle.main
-        let storyboard = UIStoryboard(name: "Main", bundle: bundle)
-        sut = storyboard.instantiateViewController(withIdentifier: "AssistantViewController") as! AssistantViewController
-    }
-    
-    // MARK: - Methods
-    func loadView() {
-        window.addSubview(sut.view)
-    }
-    
     // MARK: - Tests
     func testWhenViewLoads_CallsExecuteTasksWaitingViewToLoadInInteractor() {
         // Given
-        let interactorMock = AssistantInteractorMock()
-        sut.interactor = interactorMock
+        let interactorSpy = AssistantInteractorSpy()
+        sut.interactor = interactorSpy
         
         // When
         sut.viewDidLoad()
         
         // Then
-        XCTAssertTrue(interactorMock.executeTasksWaitingViewToLoadCalled)
+        XCTAssertTrue(interactorSpy.executeTasksWaitingViewToLoadCalled)
     }
 }
