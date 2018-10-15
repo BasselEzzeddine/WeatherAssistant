@@ -91,6 +91,8 @@ class AssistantInteractorTests: XCTestCase {
         // When
         sut.executeTasksWaitingViewToLoad()
         
+        RunLoop.current.run(mode: RunLoop.Mode.defaultRunLoopMode, before: Date(timeIntervalSinceNow: 1)) // Wait a little
+        
         // Then
         XCTAssertTrue(presenterSpy.presentWelcomeMessageCalled)
     }
@@ -102,6 +104,8 @@ class AssistantInteractorTests: XCTestCase {
         
         // When
         sut.executeTasksWaitingViewToLoad()
+        
+        RunLoop.current.run(mode: RunLoop.Mode.defaultRunLoopMode, before: Date(timeIntervalSinceNow: 1)) // Wait a little
         
         // Then
         XCTAssertTrue(voiceListenerSpy.setupVoiceListeningCalled)
@@ -115,6 +119,8 @@ class AssistantInteractorTests: XCTestCase {
         // When
         voiceListenerSpy.isSuccessfulToBeReturned = true
         sut.executeTasksWaitingViewToLoad()
+        
+        RunLoop.current.run(mode: RunLoop.Mode.defaultRunLoopMode, before: Date(timeIntervalSinceNow: 1)) // Wait a little
         
         // Then
         XCTAssertTrue(voiceListenerSpy.startListeningCalled)
@@ -132,6 +138,8 @@ class AssistantInteractorTests: XCTestCase {
         voiceListenerSpy.isSuccessfulToBeReturned = true
         voiceListenerSpy.recognizedWordToBeReturned = "Weather"
         sut.executeTasksWaitingViewToLoad()
+        
+        RunLoop.current.run(mode: RunLoop.Mode.defaultRunLoopMode, before: Date(timeIntervalSinceNow: 1)) // Wait a little
         
         // Then
         XCTAssertTrue(weatherWorkerSpy.fetchCurrentWeatherCalled)
@@ -156,6 +164,8 @@ class AssistantInteractorTests: XCTestCase {
         voiceListenerSpy.isSuccessfulToBeReturned = true
         voiceListenerSpy.recognizedWordToBeReturned = "Weather"
         sut.executeTasksWaitingViewToLoad()
+        
+        RunLoop.current.run(mode: RunLoop.Mode.defaultRunLoopMode, before: Date(timeIntervalSinceNow: 1)) // Wait a little
         
         // Then
         XCTAssertTrue(presenterSpy.presentWeatherMessageCalled)
@@ -183,6 +193,8 @@ class AssistantInteractorTests: XCTestCase {
         voiceListenerSpy.recognizedWordToBeReturned = "Weather"
         sut.executeTasksWaitingViewToLoad()
         
+        RunLoop.current.run(mode: RunLoop.Mode.defaultRunLoopMode, before: Date(timeIntervalSinceNow: 1)) // Wait a little
+        
         // Then
         XCTAssertTrue(presenterSpy.presentErrorMessageCalled)
     }
@@ -204,6 +216,8 @@ class AssistantInteractorTests: XCTestCase {
         
         voiceListenerSpy.recognizedWordToBeReturned = "Weather"
         sut.executeTasksWaitingViewToLoad()
+        
+        RunLoop.current.run(mode: RunLoop.Mode.defaultRunLoopMode, before: Date(timeIntervalSinceNow: 1)) // Wait a little
         
         // Then
         XCTAssertTrue(presenterSpy.presentErrorMessageCalled)
