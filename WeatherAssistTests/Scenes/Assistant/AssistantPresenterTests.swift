@@ -64,8 +64,8 @@ class AssistantPresenterTests: XCTestCase {
         sut.speaker = speakerMock
         
         // When
-        let response = AssistantModel.Response(temperature: 25, pressure: 1000, humidity: 50)
-        sut.presentWeatherMessage(response: response)
+        let response = AssistantModel.Fetch.Response(temperature: 25, pressure: 1000, humidity: 50)
+        sut.presentWeatherMessage(response)
         
         // Then
         XCTAssertTrue(speakerMock.speakCalled)

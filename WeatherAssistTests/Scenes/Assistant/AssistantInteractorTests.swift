@@ -19,7 +19,7 @@ class AssistantInteractorTests: XCTestCase {
         var presentWelcomeMessageCalled = false
         
         var presentWeatherMessageCalled = false
-        var presentWeatherMessageResponse: AssistantModel.Response?
+        var presentWeatherMessageResponse: AssistantModel.Fetch.Response?
         
         var presentErrorMessageCalled = false
         
@@ -27,7 +27,7 @@ class AssistantInteractorTests: XCTestCase {
             presentWelcomeMessageCalled = true
         }
         
-        func presentWeatherMessage(response: AssistantModel.Response) {
+        func presentWeatherMessage(_ response: AssistantModel.Fetch.Response) {
             presentWeatherMessageCalled = true
             presentWeatherMessageResponse = response
         }
@@ -130,7 +130,7 @@ class AssistantInteractorTests: XCTestCase {
         
         // When
         voiceListenerMock.recognizedWordToBeReturned = "Weather"
-        sut.startListeningToUserAndRecognizingWords()
+        sut.startListeningAndRecognizingWords()
         
         // Then
         XCTAssertTrue(weatherWorkerMock.fetchCurrentWeatherCalled)
@@ -153,7 +153,7 @@ class AssistantInteractorTests: XCTestCase {
         weatherWorkerMock.successToBeReturned = true
         
         voiceListenerMock.recognizedWordToBeReturned = "Weather"
-        sut.startListeningToUserAndRecognizingWords()
+        sut.startListeningAndRecognizingWords()
         
         // Then
         XCTAssertTrue(presenterMock.presentWeatherMessageCalled)
@@ -179,7 +179,7 @@ class AssistantInteractorTests: XCTestCase {
         weatherWorkerMock.successToBeReturned = false
         
         voiceListenerMock.recognizedWordToBeReturned = "Weather"
-        sut.startListeningToUserAndRecognizingWords()
+        sut.startListeningAndRecognizingWords()
         
         // Then
         XCTAssertTrue(presenterMock.presentErrorMessageCalled)
@@ -201,7 +201,7 @@ class AssistantInteractorTests: XCTestCase {
         weatherWorkerMock.successToBeReturned = true
         
         voiceListenerMock.recognizedWordToBeReturned = "Weather"
-        sut.startListeningToUserAndRecognizingWords()
+        sut.startListeningAndRecognizingWords()
         
         // Then
         XCTAssertTrue(presenterMock.presentErrorMessageCalled)

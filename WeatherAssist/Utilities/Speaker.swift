@@ -12,9 +12,9 @@ import Speech
 class Speaker: NSObject {
     
     // MARK: - Properties
-    var synthesizer = AVSpeechSynthesizer()
+    var synthesizer: AVSpeechSynthesizer?
     
-    // MARK: - Init
+    // MARK: - NSObject
     override init() {
         super.init()
         setupAudioSessionForSpeaking()
@@ -22,6 +22,7 @@ class Speaker: NSObject {
     
     // MARK: - Methods
     func speak(message: String) {
+        guard let synthesizer = synthesizer else { return }
         if !synthesizer.isSpeaking {
             let utterance = AVSpeechUtterance(string: message)
             synthesizer.speak(utterance)
@@ -33,6 +34,8 @@ class Speaker: NSObject {
             let audioSession = AVAudioSession.sharedInstance()
             try audioSession.setCategory(AVAudioSessionCategoryPlayAndRecord, with: AVAudioSessionCategoryOptions.defaultToSpeaker)
         }
-        catch _ {}
+        catch _ {
+            print("AudioSession exception")
+        }
     }
 }

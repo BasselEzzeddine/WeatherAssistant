@@ -10,7 +10,7 @@ import Foundation
 
 protocol AssistantPresenterIn {
     func presentWelcomeMessage()
-    func presentWeatherMessage(response: AssistantModel.Response)
+    func presentWeatherMessage(_ response: AssistantModel.Fetch.Response)
     func presentErrorMessage()
 }
 
@@ -30,7 +30,7 @@ extension AssistantPresenter: AssistantPresenterIn {
         speaker?.speak(message: "Hello, please express your demand")
     }
     
-    func presentWeatherMessage(response: AssistantModel.Response) {
+    func presentWeatherMessage(_ response: AssistantModel.Fetch.Response) {
         let weatherMessage = "Current temperature in Berlin is \(response.temperature) degrees celsius with pressure of \(response.pressure) Hectopascals, and \(response.humidity) percent humidity"
         speaker?.speak(message: weatherMessage)
     }

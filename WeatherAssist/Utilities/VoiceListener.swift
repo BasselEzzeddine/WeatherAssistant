@@ -12,10 +12,10 @@ import Speech
 class VoiceListener {
     
     // MARK: - Properties
-    private let audioEngine = AVAudioEngine()
-    private let speechRecognizer = SFSpeechRecognizer()
-    private let request = SFSpeechAudioBufferRecognitionRequest()
-    private var recognitionTask: SFSpeechRecognitionTask?
+    var audioEngine: AVAudioEngine?
+    var speechRecognizer: SFSpeechRecognizer?
+    var speechAudioBufferRecognitionRequest: SFSpeechAudioBufferRecognitionRequest?
+    var recognitionTask: SFSpeechRecognitionTask?
     
     // MARK: - Methods
     func setupVoiceListening(completionHandler: @escaping(_ isSuccessful: Bool) -> Void) {
@@ -39,20 +39,22 @@ class VoiceListener {
     }
     
     private func configureListener() {
+        guard let audioEngine = audioEngine else { return }
         let node = audioEngine.inputNode
         let recordingFormat = node.outputFormat(forBus: 0)
         node.installTap(onBus: 0, bufferSize: 1024,
                         format: recordingFormat) { [unowned self]
                             (buffer, _) in
-                            self.request.append(buffer)
+                            self.speechAudioBufferRecognitionRequest?.append(buffer)
         }
     }
     
     func startListening(completionHandler: @escaping(_ recognizedWord: String) -> Void) {
+        guard let audioEngine = audioEngine, let speechAudioBufferRecognitionRequest = speechAudioBufferRecognitionRequest else { return }
         do {
             audioEngine.prepare()
             try audioEngine.start()
-            recognitionTask = speechRecognizer?.recognitionTask(with: request) {
+            recognitionTask = speechRecognizer?.recognitionTask(with: speechAudioBufferRecognitionRequest) {
                 (result, _) in
                 if let transcription = result?.bestTranscription, let lastSegment = transcription.segments.last {
                     completionHandler(lastSegment.substring)

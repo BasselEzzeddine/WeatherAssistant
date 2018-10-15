@@ -10,9 +10,11 @@ import Foundation
 
 enum AssistantModel {
     
-    struct Response {
-        let temperature: Int
-        let pressure: Int
-        let humidity: Int
+    enum Fetch {
+        struct Response {
+            let temperature: Int
+            let pressure: Int
+            let humidity: Int
+        }
     }
 }
