@@ -31,7 +31,7 @@ extension AssistantPresenter: AssistantPresenterIn {
     }
     
     func presentWeatherMessage(_ response: AssistantModel.Fetch.Response) {
-        let weatherMessage = "Current temperature in Berlin is \(response.temperature) degrees celsius with pressure of \(response.pressure) Hectopascals, and \(response.humidity) percent humidity"
+        let weatherMessage = "Current temperature in Berlin is \(Int(response.temperature)) degrees celsius with pressure of \(Int(response.pressure)) Hectopascals, and \(Int(response.humidity)) percent humidity"
         speaker?.speak(message: weatherMessage)
     }
     

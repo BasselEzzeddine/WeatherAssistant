@@ -33,7 +33,9 @@ class AssistantInteractor {
             if recognizedWord.lowercased() == "weather" {
                 self.weatherWorker?.fetchCurrentWeather(completionHandler: {
                     (rawWeather: RawWeather?, success: Bool) in
-                    self.handleFetchCurrentWeatherResponse(rawWeather: rawWeather, success: success)
+                    DispatchQueue.main.async {
+                        self.handleFetchCurrentWeatherResponse(rawWeather: rawWeather, success: success)
+                    }
                 })
             }
         })
@@ -42,7 +44,7 @@ class AssistantInteractor {
     private func handleFetchCurrentWeatherResponse(rawWeather: RawWeather?, success: Bool) {
         if let rawWeather = rawWeather, success {
             let main = rawWeather.main
-            let response = AssistantModel.Fetch.Response(temperature: Int(main.temp), pressure: Int(main.pressure), humidity: Int(main.humidity))
+            let response = AssistantModel.Fetch.Response(temperature: main.temp, pressure: main.pressure, humidity: main.humidity)
             self.presenter?.presentWeatherMessage(response)
         }
         else {

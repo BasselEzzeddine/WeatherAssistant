@@ -12,9 +12,9 @@ enum AssistantModel {
     
     enum Fetch {
         struct Response {
-            let temperature: Int
-            let pressure: Int
-            let humidity: Int
+            let temperature: Float
+            let pressure: Float
+            let humidity: Float
         }
     }
 }

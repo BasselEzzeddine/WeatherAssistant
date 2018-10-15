@@ -17,13 +17,3 @@ struct RawWeather: Codable, Equatable {
         let humidity: Float
     }
 }
-
-func ==(lhs: RawWeather, rhs: RawWeather) -> Bool {
-    return lhs.main == rhs.main
-}
-
-func ==(lhs: RawWeather.Main, rhs: RawWeather.Main) -> Bool {
-    return lhs.temp == rhs.temp
-        && lhs.pressure == rhs.pressure
-        && lhs.humidity == rhs.humidity
-}
