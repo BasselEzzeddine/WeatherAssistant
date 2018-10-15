@@ -20,9 +20,6 @@ extension AssistantPresenter: AssistantInteractorOut {
 
 class AssistantConfigurator {
     
-    // MARK: - Properties
-    static let sharedInstance = AssistantConfigurator()
-    
     // MARK: - Methods
     func configure(viewController: AssistantViewController) {
         let speaker = Speaker()
