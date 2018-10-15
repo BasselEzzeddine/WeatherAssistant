@@ -120,7 +120,7 @@ class AssistantInteractorTests: XCTestCase {
         XCTAssertTrue(voiceListenerSpy.startListeningCalled)
     }
     
-    func testCallingStartListeningToUserAndRecognizingWords_CallsFetchCurrentWeatherInWorker_WhenRecognizedWordIsWeather() {
+    func testCallingExecuteTasksWaitingViewToLoad_CallsFetchCurrentWeatherInWorker_WhenRecognizedWordIsWeather() {
         // Given
         let voiceListenerSpy = VoiceListenerSpy()
         sut.voiceListener = voiceListenerSpy
@@ -129,14 +129,15 @@ class AssistantInteractorTests: XCTestCase {
         sut.weatherWorker = weatherWorkerSpy
         
         // When
+        voiceListenerSpy.isSuccessfulToBeReturned = true
         voiceListenerSpy.recognizedWordToBeReturned = "Weather"
-        sut.startListeningAndRecognizingWords()
+        sut.executeTasksWaitingViewToLoad()
         
         // Then
         XCTAssertTrue(weatherWorkerSpy.fetchCurrentWeatherCalled)
     }
     
-    func testCallingStartListeningToUserAndRecognizingWords_CallsPresentWeatherMessageInPresenterWithCorrectData_WhenResponseFromWorkerIsSuccessAndIsNotNil() {
+    func testCallingExecuteTasksWaitingViewToLoad_CallsPresentWeatherMessageInPresenterWithCorrectData_WhenResponseFromWorkerIsSuccessAndIsNotNil() {
         // Given
         let voiceListenerSpy = VoiceListenerSpy()
         sut.voiceListener = voiceListenerSpy
@@ -152,8 +153,9 @@ class AssistantInteractorTests: XCTestCase {
         weatherWorkerSpy.rawWeatherToBeReturned = RawWeather(main: main)
         weatherWorkerSpy.successToBeReturned = true
         
+        voiceListenerSpy.isSuccessfulToBeReturned = true
         voiceListenerSpy.recognizedWordToBeReturned = "Weather"
-        sut.startListeningAndRecognizingWords()
+        sut.executeTasksWaitingViewToLoad()
         
         // Then
         XCTAssertTrue(presenterSpy.presentWeatherMessageCalled)
@@ -162,7 +164,7 @@ class AssistantInteractorTests: XCTestCase {
         XCTAssertEqual(presenterSpy.presentWeatherMessageResponse?.humidity, 50)
     }
     
-    func testCallingStartListeningToUserAndRecognizingWords_CallsPresentErrorMessageInPresenter_WhenResponseFromWorkerIsNotSuccess() {
+    func testCallingExecuteTasksWaitingViewToLoad_CallsPresentErrorMessageInPresenter_WhenResponseFromWorkerIsNotSuccess() {
         // Given
         let voiceListenerSpy = VoiceListenerSpy()
         sut.voiceListener = voiceListenerSpy
@@ -179,13 +181,13 @@ class AssistantInteractorTests: XCTestCase {
         weatherWorkerSpy.successToBeReturned = false
         
         voiceListenerSpy.recognizedWordToBeReturned = "Weather"
-        sut.startListeningAndRecognizingWords()
+        sut.executeTasksWaitingViewToLoad()
         
         // Then
         XCTAssertTrue(presenterSpy.presentErrorMessageCalled)
     }
     
-    func testCallingStartListeningToUserAndRecognizingWords_CallsPresentErrorMessageInPresenter_WhenResponseFromWorkerIsSuccessAndIsNil() {
+    func testCallingExecuteTasksWaitingViewToLoad_CallsPresentErrorMessageInPresenter_WhenResponseFromWorkerIsSuccessAndIsNil() {
         // Given
         let voiceListenerSpy = VoiceListenerSpy()
         sut.voiceListener = voiceListenerSpy
@@ -201,7 +203,7 @@ class AssistantInteractorTests: XCTestCase {
         weatherWorkerSpy.successToBeReturned = true
         
         voiceListenerSpy.recognizedWordToBeReturned = "Weather"
-        sut.startListeningAndRecognizingWords()
+        sut.executeTasksWaitingViewToLoad()
         
         // Then
         XCTAssertTrue(presenterSpy.presentErrorMessageCalled)

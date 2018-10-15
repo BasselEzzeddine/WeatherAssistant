@@ -26,7 +26,7 @@ class AssistantInteractor {
     var weatherWorker: WeatherWorker?
     
     // MARK: - Methods
-    func startListeningAndRecognizingWords() {
+    private func startListeningAndRecognizingWords() {
         self.voiceListener?.startListening(completionHandler: {
             (recognizedWord: String) in
             //print(recognizedWord)
