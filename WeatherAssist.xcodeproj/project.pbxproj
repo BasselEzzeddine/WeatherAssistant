@@ -126,6 +126,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		501EF8D221748DF3007B66F5 /* Scenes */ = {
+			isa = PBXGroup;
+			children = (
+				50B2A3DB20B9BAF8007E7207 /* Assistant */,
+			);
+			path = Scenes;
+			sourceTree = "<group>";
+		};
 		503E24F520BAD52100661A5E /* MockServer */ = {
 			isa = PBXGroup;
 			children = (
@@ -210,7 +218,7 @@
 				503E24F520BAD52100661A5E /* MockServer */,
 				50B2A3DF20B9C027007E7207 /* Utilities */,
 				5044CE1220BABB1A00664B08 /* Workers */,
-				50B2A3DB20B9BAF8007E7207 /* Assistant */,
+				501EF8D221748DF3007B66F5 /* Scenes */,
 			);
 			path = WeatherAssistTests;
 			sourceTree = "<group>";
