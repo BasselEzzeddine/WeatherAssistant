@@ -27,14 +27,14 @@ class AssistantInteractor {
     
     // MARK: - Methods
     private func startListeningAndRecognizingWords() {
-        self.voiceListener?.startListening(completionHandler: {
+        self.voiceListener?.startListening(completionHandler: { [weak self]
             (recognizedWord: String) in
             //print(recognizedWord)
             if recognizedWord.lowercased() == "weather" {
-                self.weatherWorker?.fetchCurrentWeather(completionHandler: {
+                self?.weatherWorker?.fetchCurrentWeather(completionHandler: { [weak self]
                     (rawWeather: RawWeather?, success: Bool) in
                     DispatchQueue.main.async {
-                        self.handleFetchCurrentWeatherResponse(rawWeather: rawWeather, success: success)
+                        self?.handleFetchCurrentWeatherResponse(rawWeather: rawWeather, success: success)
                     }
                 })
             }
